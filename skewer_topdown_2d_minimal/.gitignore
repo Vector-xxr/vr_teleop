@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+
+outputs/align_once/
+outputs/auto_xy_calib/
+outputs/offline_check*/
+outputs/skewer_2d_servo/
+outputs/skewer_2d_servo_test/
+
+Log/

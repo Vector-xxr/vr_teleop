@@ -1,0 +1,45 @@
+# openarm_teleop1 conda 环境配置
+#
+# 用法：
+#   conda env create -f environment/openarm_teleop1.environment.yml
+#   conda activate openarm_teleop1
+#
+# 说明：
+# - 当前环境的 conda --from-history 只有 python=3.11 和 pip；主要 Python 包由 pip 安装。
+# - ROS2 Humble / SocketCAN / C++ 编译工具链建议走系统 apt 安装，不建议塞进 conda。
+# - 如果需要 ROS2 Python 包，请先在 shell 中 source /opt/ros/humble/setup.bash。
+# - 旧的本地 editable 包 openarm_teleop_inspace 绑定到本机路径，已故意不写入本配置。
+
+name: openarm_teleop1
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11
+  - pip
+  - cmake
+  - make
+  - pkg-config
+  - pip:
+      # MuJoCo / 可视化 / 数值计算
+      - mujoco==3.9.0
+      - glfw==2.10.0
+      - PyOpenGL==3.1.10
+      - numpy==2.4.6
+      - scipy==1.17.1
+      - matplotlib==3.11.0
+      - pillow==12.2.0
+
+      # 真实电机 Gloria/DM SDK 单电机测试
+      - pyserial==3.5
+      - PyYAML==6.0.3
+
+      # 运动学/优化相关工具
+      - mink==1.1.1
+      - qpsolvers==4.12.0
+      - daqp==0.8.7
+      - typing_extensions==4.15.0
+      - packaging
+      - python-dateutil==2.9.0.post0
+      - pyparsing==3.3.2
+      - six==1.17.0

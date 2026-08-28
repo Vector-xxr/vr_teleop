@@ -1,0 +1,2 @@
+[console_scripts]
+dora-openarm-quitter = dora_openarm_quitter.main:main

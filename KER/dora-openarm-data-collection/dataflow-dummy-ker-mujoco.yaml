@@ -1,0 +1,63 @@
+# Fully simulated: dummy KER poses → MuJoCo (no USB KER, no CAN).
+# Good for pipeline smoke when KER hardware is unplugged.
+
+nodes:
+  - id: ui
+    build: pip install -e nodes/dora-openarm-data-collection-ui
+    path: dora-openarm-data-collection-ui
+    env:
+      METADATA_FILE: "metadata_mujoco.yaml"
+    inputs:
+      tick: dora/timer/secs/1
+    outputs:
+      - command
+
+  - id: quittable-tick-leader
+    build: pip install -e nodes/dora-openarm-quitter
+    path: dora-openarm-quitter
+    inputs:
+      command: ui/command
+      tick: dora/timer/millis/4
+    outputs:
+      - tick
+
+  - id: leader
+    build: pip install -e nodes/dora-openarm-dummy-ker
+    path: dora-openarm-dummy-ker
+    inputs:
+      tick: quittable-tick-leader/tick
+    outputs:
+      - follower_position_right
+      - follower_position_left
+
+  - id: mujoco
+    build: pip install -e nodes/dora-openarm-mujoco
+    path: dora-openarm-mujoco
+    args: "--scene demo --keyframe home --viewer 30"
+    env:
+      DISPLAY: ":0"
+    inputs:
+      position_left:
+        source: leader/follower_position_left
+        queue_size: 1
+      position_right:
+        source: leader/follower_position_right
+        queue_size: 1
+    outputs:
+      - status
+      - arm_right_observation
+      - arm_left_observation
+
+  - id: recorder
+    build: pip install -e nodes/dora-openarm-dataset-recorder
+    path: dora-openarm-dataset-recorder
+    env:
+      METADATA_FILE: "metadata_mujoco.yaml"
+      DIRECTORY: "ker_mujoco_data"
+      NAME: "dummy_joints"
+    inputs:
+      command: ui/command
+      arm_right_action: leader/follower_position_right
+      arm_right_observation: mujoco/arm_right_observation
+      arm_left_action: leader/follower_position_left
+      arm_left_observation: mujoco/arm_left_observation

@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Meta Quest 3 Controller Passthrough Client</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        /* 当进入 AR 模式时，调整背景以便看清现实世界 */
+        body.ar-active {
+            background-color: rgba(255, 255, 255, 0.1) !important;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 { color: #333; text-align: center; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 5px; text-align: center; }
+        .connected { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .disconnected { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .instructions { background-color: #e7f3fe; padding: 15px; border-radius: 5px; margin: 20px 0; }
+        button {
+            background-color: #007bff; color: white; border: none; padding: 10px 20px;
+            border-radius: 5px; cursor: pointer; font-size: 16px; margin: 5px;
+        }
+        button:hover { background-color: #0056b3; }
+        button:disabled { background-color: #6c757d; cursor: not-allowed; }
+        .warning {
+            background-color: #fff3cd; color: #856404; border: 1px solid #ffeaa7;
+            padding: 10px; border-radius: 5px; margin: 10px 0;
+        }
+        .webxr-status { padding: 10px; margin: 10px 0; border-radius: 5px; text-align: center; }
+        .webxr-supported { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .webxr-not-supported { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        
+        .data-panel {
+            display: inline-block; width: 45%; vertical-align: top; 
+            padding: 10px; border: 1px solid #ccc; margin-right: 2%;
+            background: rgba(255,255,255,0.9); /* 稍微透明一点的面板背景 */
+            border-radius: 5px;
+        }
+        .gripper-banner {
+            font-size: 22px;
+            font-weight: bold;
+            text-align: center;
+            padding: 16px;
+            margin: 12px 0;
+            border-radius: 8px;
+            border: 2px solid #333;
+            background: #fff;
+        }
+        .gripper-banner.idle { background: #f8f9fa; color: #333; }
+        .gripper-banner.close-on { background: #f8d7da; color: #721c24; border-color: #f5c6cb; }
+        .gripper-banner.open-on { background: #d4edda; color: #155724; border-color: #c3e6cb; }
+        .btn-on { color: #c0392b; font-weight: bold; font-size: 18px; }
+        .btn-off { color: #888; }
+    </style>
+</head>
+<body>
+    <div id="main-container" class="container">
+        <h1>Quest 3 Passthrough Data Client</h1>
+        <p style="text-align:center;color:#666;">client v17 — A/B/X/Y at gamepad btn[4]/[5]</p>
+        
+        <div id="webxrStatus" class="webxr-status webxr-not-supported">Checking WebXR support...</div>
+        
+        <div id="status" class="status disconnected">Disconnected</div>
+        
+        <div class="warning">
+            <strong>重要:</strong> 必须在 Quest 浏览器中通过 HTTPS (或 localhost) 访问才能开启透视功能。
+        </div>
+        
+        <div class="instructions">
+            <h3>使用说明:</h3>
+            <ol>
+                <li>启动 Python 服务器: <code>python simple_server.py</code></li>
+                <li>在 Quest 3 浏览器中打开此页面</li>
+                <li>点击下方按钮，允许进入 "Immersive AR" 模式</li>
+                <li>你将看到现实环境，同时数据会发送到服务器</li>
+            </ol>
+        </div>
+        
+        <div style="text-align: center; margin: 20px 0;">
+            <button id="startBtn" onclick="startTracking()" disabled>Start AR Tracking</button>
+            <button id="stopBtn" onclick="stopTracking()" disabled>Stop Tracking</button>
+        </div>
+
+        <div id="gripperBanner" class="gripper-banner idle">
+            夹爪按键：右手 A=闭合 B=张开 &nbsp;|&nbsp; 左手 X=闭合 Y=张开<br>
+            <span style="font-size:16px;font-weight:normal;">按 A/B/X/Y 后此处会变红/变绿</span>
+        </div>
+        
+        <div id="controllersData" style="margin-top: 20px;">
+            <div id="leftController" class="data-panel">
+                <h3>Left Controller</h3>
+                <div id="leftData">No data yet...</div>
+            </div>
+            <div id="rightController" class="data-panel">
+                <h3>Right Controller</h3>
+                <div id="rightData">No data yet...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check WebXR support on page load
+        window.onload = function() {
+            checkWebXRSuport();
+        };
+
+        // 检查 WebXR 支持情况，优先检查 AR
+        function checkWebXRSuport() {
+            const statusDiv = document.getElementById('webxrStatus');
+            if ('xr' in navigator) {
+                // 修改：优先检查 immersive-ar
+                navigator.xr.isSessionSupported('immersive-ar')
+                    .then(supported => {
+                        if (supported) {
+                            statusDiv.className = 'webxr-status webxr-supported';
+                            statusDiv.textContent = '✅ WebXR AR Supported (Passthrough Available)';
+                            document.getElementById('startBtn').disabled = false;
+                        } else {
+                            // 如果不支持 AR，回退检查 VR
+                            navigator.xr.isSessionSupported('immersive-vr')
+                                .then(vrSupported => {
+                                    if (vrSupported) {
+                                        statusDiv.className = 'webxr-status webxr-supported';
+                                        statusDiv.textContent = '⚠️ WebXR VR Supported Only (No Passthrough)';
+                                        document.getElementById('startBtn').disabled = false;
+                                    } else {
+                                        statusDiv.className = 'webxr-status webxr-not-supported';
+                                        statusDiv.textContent = '❌ WebXR not supported';
+                                    }
+                                });
+                        }
+                    })
+                    .catch(err => {
+                        statusDiv.className = 'webxr-status webxr-not-supported';
+                        statusDiv.textContent = `Error: ${err.message}`;
+                    });
+            } else {
+                statusDiv.className = 'webxr-status webxr-not-supported';
+                statusDiv.textContent = 'WebXR is not supported in this browser.';
+            }
+        }
+
+        const serverHostname = window.location.hostname || 'localhost';
+        const protocol = window.location.protocol.startsWith('https') ? 'wss://' : 'ws://';
+        const websocketPort = 8442;
+        const websocketUrl = `${protocol}${serverHostname}:${websocketPort}`;
+        
+        let websocket = null;
+        let xrSession = null;
+        let xrRefSpace = null;
+        
+        function updateStatus(connected) {
+            const statusDiv = document.getElementById('status');
+            if (connected) {
+                statusDiv.className = 'status connected';
+                statusDiv.textContent = `Connected to ${websocketUrl}`;
+            } else {
+                statusDiv.className = 'status disconnected';
+                statusDiv.textContent = `Disconnected from ${websocketUrl}`;
+            }
+        }
+        
+        function connectWebSocket() {
+            if (websocket && websocket.readyState === WebSocket.OPEN) return;
+
+            try {
+                websocket = new WebSocket(websocketUrl);
+                websocket.onopen = () => { console.log(`WS Connected`); updateStatus(true); };
+                websocket.onerror = (e) => { console.error(`WS Error:`, e); updateStatus(false); };
+                websocket.onclose = () => { updateStatus(false); };
+            } catch (error) {
+                console.error(`WS Connect Failed:`, error);
+                updateStatus(false);
+            }
+        }
+        
+        function sendControllerData(data) {
+            if (websocket && websocket.readyState === WebSocket.OPEN) {
+                websocket.send(JSON.stringify(data));
+            }
+        }
+        
+        function updateControllerDisplay(hand, position, rotation, gripActive, trigger, buttonClose, buttonOpen) {
+            const dataDiv = document.getElementById(`${hand}Data`);
+            const closeLabel = hand === 'left' ? 'X' : 'A';
+            const openLabel = hand === 'left' ? 'Y' : 'B';
+            if (dataDiv) {
+                dataDiv.innerHTML = `
+                    <p><strong>Pos:</strong> [${position.x.toFixed(2)}, ${position.y.toFixed(2)}, ${position.z.toFixed(2)}]</p>
+                    <p><strong>Rot:</strong> [${rotation.x.toFixed(0)}°, ${rotation.y.toFixed(0)}°, ${rotation.z.toFixed(0)}°]</p>
+                    <p><strong>Trigger:</strong> ${trigger ? 'ON' : 'OFF'}</p>
+                    <p><strong>${closeLabel} 闭合:</strong> <span class="${buttonClose ? 'btn-on' : 'btn-off'}">${buttonClose ? '● 按下' : '○ 未按'}</span></p>
+                    <p><strong>${openLabel} 张开:</strong> <span class="${buttonOpen ? 'btn-on' : 'btn-off'}">${buttonOpen ? '● 按下' : '○ 未按'}</span></p>
+                `;
+            }
+            updateGripperBannerFromState();
+        }
+
+        let lastLeft = { close: false, open: false };
+        let lastRight = { close: false, open: false };
+
+        function updateGripperBannerFromState() {
+            const banner = document.getElementById('gripperBanner');
+            if (!banner) return;
+            const anyClose = lastLeft.close || lastRight.close;
+            const anyOpen = lastLeft.open || lastRight.open;
+            if (anyClose) {
+                banner.className = 'gripper-banner close-on';
+                banner.innerHTML = '● 检测到闭合键 (A / X) — 已发送到 PC';
+            } else if (anyOpen) {
+                banner.className = 'gripper-banner open-on';
+                banner.innerHTML = '● 检测到张开键 (B / Y) — 已发送到 PC';
+            } else {
+                banner.className = 'gripper-banner idle';
+                banner.innerHTML =
+                    '夹爪按键：右手 A=闭合 B=张开 &nbsp;|&nbsp; 左手 X=闭合 Y=张开<br>' +
+                    '<span style="font-size:16px;font-weight:normal;">按 A/B/X/Y 后此处会变红/变绿</span>';
+            }
+        }
+
+        function readFaceButtons(handedness, gamepad) {
+            let buttonClose = false;
+            let buttonOpen = false;
+            if (!gamepad || !gamepad.buttons) {
+                return { buttonClose, buttonOpen };
+            }
+            const pressed = (idx) => {
+                if (gamepad.buttons.length <= idx) return false;
+                const b = gamepad.buttons[idx];
+                return !!(b && (b.pressed || b.value > 0.5));
+            };
+            // Quest 3 / Touch Plus (xr-standard): 0=trigger 1=squeeze 2=touchpad 3=thumbstick
+            // Face buttons: 4=X/A (close), 5=Y/B (open). Quest 2 legacy: 3/4.
+            if (gamepad.buttons.length >= 6) {
+                buttonClose = pressed(4);
+                buttonOpen = pressed(5);
+            } else {
+                buttonClose = pressed(3);
+                buttonOpen = pressed(4);
+            }
+            return { buttonClose, buttonOpen };
+        }
+        
+        async function startTracking() {
+            connectWebSocket();
+            
+            if (!navigator.xr) return;
+            
+            // 1. 确定会话模式：优先 AR
+            const isArSupported = await navigator.xr.isSessionSupported('immersive-ar');
+            const sessionMode = isArSupported ? 'immersive-ar' : 'immersive-vr';
+            
+            try {
+                // 2. 请求会话，包含 dom-overlay 功能
+                // dom-overlay 允许网页 UI 在 AR 模式下悬浮显示，而不是消失
+                const sessionInit = {
+                    requiredFeatures: ['local-floor'],
+                    optionalFeatures: ['dom-overlay'],
+                    domOverlay: { root: document.body } 
+                };
+
+                const session = await navigator.xr.requestSession(sessionMode, sessionInit);
+                xrSession = session;
+                
+                // 启用 AR 样式
+                document.body.classList.add('ar-active');
+                
+                // 3. 创建支持透明度的 WebGL 上下文
+                const canvas = document.createElement('canvas');
+                const gl = canvas.getContext('webgl2', { alpha: true, xrCompatible: true }) || 
+                          canvas.getContext('webgl', { alpha: true, xrCompatible: true });
+                
+                const xrGlLayer = new XRWebGLLayer(session, gl);
+                session.updateRenderState({ baseLayer: xrGlLayer });
+                
+                // 渲染循环
+                const frameCallback = (time, frame) => {
+                    const pose = frame.getViewerPose(xrRefSpace);
+                    
+                    // 4. 【关键步骤】清除画布为全透明
+                    // 这一步如果不做，你会看到黑屏而不是现实世界
+                    if (session.renderState.baseLayer) {
+                        gl.bindFramebuffer(gl.FRAMEBUFFER, session.renderState.baseLayer.framebuffer);
+                        gl.clearColor(0, 0, 0, 0); // r, g, b, alpha (0 = 透明)
+                        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+                    }
+
+                    if (pose) {
+                        const inputSources = session.inputSources;
+                        
+                        let leftData = { hand: 'left', active: false };
+                        let rightData = { hand: 'right', active: false };
+                        
+                        for (const inputSource of inputSources) {
+                            // 获取手柄位置
+                            const gripPose = frame.getPose(inputSource.gripSpace, xrRefSpace);
+                            
+                            if (gripPose) {
+                                const pos = gripPose.transform.position;
+                                const rot = gripPose.transform.orientation;
+                                const euler = quaternionToEuler(rot.x, rot.y, rot.z, rot.w);
+                                
+                                let trigger = 0;
+                                let grip = false;
+                                let buttonClose = false;
+                                let buttonOpen = false;
+                                
+                                if (inputSource.gamepad) {
+                                    const buttons = inputSource.gamepad.buttons;
+                                    if (buttons.length > 0) {
+                                        trigger = (buttons[0].pressed || buttons[0].value > 0.5) ? 1 : 0;
+                                    }
+                                    if (buttons.length > 1) {
+                                        grip = buttons[1].pressed || buttons[1].value > 0.5;
+                                    }
+                                    ({ buttonClose, buttonOpen } = readFaceButtons(inputSource.handedness, inputSource.gamepad));
+                                }
+                                
+                                const controllerInfo = {
+                                    position: { x: pos.x, y: pos.y, z: pos.z },
+                                    rotation: { x: euler.x, y: euler.y, z: euler.z },
+                                    quaternion: { x: rot.x, y: rot.y, z: rot.z, w: rot.w },
+                                    gripActive: grip,
+                                    trigger: trigger,
+                                    buttonClose: buttonClose,
+                                    buttonOpen: buttonOpen
+                                };
+
+                                updateControllerDisplay(inputSource.handedness, controllerInfo.position, controllerInfo.rotation, grip, trigger, buttonClose, buttonOpen);
+                                if (inputSource.handedness === 'left') {
+                                    lastLeft = { close: buttonClose, open: buttonOpen };
+                                } else if (inputSource.handedness === 'right') {
+                                    lastRight = { close: buttonClose, open: buttonOpen };
+                                }
+                                updateGripperBannerFromState();
+
+                                if (inputSource.handedness === 'left') {
+                                    leftData = { ...controllerInfo, hand: 'left', active: true };
+                                } else if (inputSource.handedness === 'right') {
+                                    rightData = { ...controllerInfo, hand: 'right', active: true };
+                                }
+                            }
+                        }
+                        
+                        // 发送数据
+                        if (leftData.active || rightData.active) {
+                            sendControllerData({
+                                timestamp: Math.round(performance.now() * 1000),
+                                leftController: leftData.active ? leftData : null,
+                                rightController: rightData.active ? rightData : null
+                            });
+                        }
+                    }
+                    session.requestAnimationFrame(frameCallback);
+                };
+                
+                // 请求参考空间
+                session.requestReferenceSpace('local-floor').then((refSpace) => {
+                    xrRefSpace = refSpace;
+                    session.requestAnimationFrame(frameCallback);
+                }).catch(() => {
+                    session.requestReferenceSpace('local').then((refSpace) => {
+                        xrRefSpace = refSpace;
+                        session.requestAnimationFrame(frameCallback);
+                    });
+                });
+                
+                // 监听会话结束
+                session.addEventListener('end', () => {
+                    xrSession = null;
+                    document.body.classList.remove('ar-active');
+                    document.getElementById('startBtn').disabled = false;
+                    document.getElementById('stopBtn').disabled = true;
+                });
+                
+                document.getElementById('startBtn').disabled = true;
+                document.getElementById('stopBtn').disabled = false;
+                
+            } catch (err) {
+                console.error('Session Error:', err);
+                alert('Failed to start AR session: ' + err.message);
+            }
+        }
+        
+        function stopTracking() {
+            if (xrSession) {
+                xrSession.end();
+            }
+            if (websocket) {
+                websocket.close();
+            }
+        }
+        
+        // 四元数转欧拉角辅助函数
+        function quaternionToEuler(x, y, z, w) {
+            const sinr_cosp = 2 * (w * x + y * z);
+            const cosr_cosp = 1 - 2 * (x * x + y * y);
+            const roll = Math.atan2(sinr_cosp, cosr_cosp);
+
+            const sinp = 2 * (w * y - z * x);
+            let pitch;
+            if (Math.abs(sinp) >= 1) pitch = sinp > 0 ? Math.PI / 2 : -Math.PI / 2;
+            else pitch = Math.asin(sinp);
+
+            const siny_cosp = 2 * (w * z + x * y);
+            const cosy_cosp = 1 - 2 * (y * y + z * z);
+            const yaw = Math.atan2(siny_cosp, cosy_cosp);
+
+            return {
+                x: roll * 180 / Math.PI,
+                y: pitch * 180 / Math.PI,
+                z: yaw * 180 / Math.PI
+            };
+        }
+    </script>
+</body>
+</html>

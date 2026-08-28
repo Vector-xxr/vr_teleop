@@ -1,0 +1,34 @@
+[Unit]
+Description=OpenArm left job orchestrator (steady once, then TCP :47925)
+Documentation=file:///home/knowin/Desktop/vr_control/boot_autostart_left_job/SOP.md
+# The TCP listener can bind before a LAN address is assigned. Depending on
+# network-online blocks boot on unplugged NICs (for example eno1) for ~2 minutes.
+After=network.target
+
+[Service]
+Type=simple
+User=knowin
+Group=knowin
+WorkingDirectory=/home/knowin/Desktop/vr_control
+
+# Secrets / overrides (create from env.systemd.example)
+EnvironmentFile=/home/knowin/Desktop/vr_control/left_job_orchestrator/env.systemd
+
+# Read-only verification: password/Python, ROS environment, runtime links and builds.
+# This wrapper sources ROS in its own process before checking vendor libraries.
+ExecStartPre=/usr/bin/bash /home/knowin/Desktop/vr_control/boot_autostart_left_job/check_service_env.sh
+# Read-only wait for udev/USB-CAN enumeration; replay configures the links later.
+ExecStartPre=/home/knowin/Desktop/vr_control/boot_autostart_left_job/wait_for_can.sh
+ExecStart=/home/knowin/Desktop/vr_control/left_job_orchestrator/run_service.sh
+# Do not retry automatically: every fresh start plays steady and may move arms.
+Restart=no
+TimeoutStartSec=0
+KillMode=mixed
+KillSignal=SIGINT
+
+# Logs: journalctl -u openarm-left-job -f
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

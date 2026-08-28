@@ -1,0 +1,71 @@
+# Camera-less dummy dataflow: teleop + joint action/obs recording only.
+# Tick: leader ~250 Hz (millis/4). No camera nodes.
+
+nodes:
+  - id: ui
+    build: pip install -e nodes/dora-openarm-data-collection-ui
+    path: dora-openarm-data-collection-ui
+    env:
+      METADATA_FILE: "metadata.yaml"
+    inputs:
+      tick: dora/timer/secs/1
+    outputs:
+      - command
+
+  - id: quittable-tick-leader
+    build: pip install -e nodes/dora-openarm-quitter
+    path: dora-openarm-quitter
+    inputs:
+      command: ui/command
+      # 250Hz arm loop
+      tick: dora/timer/millis/4
+    outputs:
+      - tick
+
+  - id: leader
+    build: pip install -e nodes/dora-openarm-dummy-ker
+    path: dora-openarm-dummy-ker
+    inputs:
+      tick: quittable-tick-leader/tick
+    outputs:
+      - position_right
+      - position_left
+      - follower_position_right
+      - follower_position_left
+      - joystick_x
+      - joystick_y
+      - joystick_button
+
+  - id: follower-right
+    build: pip install -e nodes/dora-openarm-dummy
+    path: dora-openarm-dummy
+    inputs:
+      request_position: leader/follower_position_right
+      move_position: leader/follower_position_right
+    outputs:
+      - position
+      - status
+
+  - id: follower-left
+    build: pip install -e nodes/dora-openarm-dummy
+    path: dora-openarm-dummy
+    inputs:
+      request_position: leader/follower_position_left
+      move_position: leader/follower_position_left
+    outputs:
+      - position
+      - status
+
+  - id: recorder
+    build: pip install -e nodes/dora-openarm-dataset-recorder
+    path: dora-openarm-dataset-recorder
+    env:
+      METADATA_FILE: "metadata.yaml"
+      DIRECTORY: "dataset_nocam"
+      NAME: "joints_only"
+    inputs:
+      command: ui/command
+      arm_right_action: leader/follower_position_right
+      arm_right_observation: follower-right/position
+      arm_left_action: leader/follower_position_left
+      arm_left_observation: follower-left/position

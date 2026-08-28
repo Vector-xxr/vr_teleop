@@ -1,0 +1,4 @@
+openarm_teleop/openarm_inplace/recordings/
+openarm_teleop/pika_ros-ros2.zip
+*.csv
+*.zip

@@ -1,0 +1,55 @@
+# Copyright 2026 Enactic, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dora-openarm-cell-lifter"
+version = "0.1.0"
+authors = [{ name = "Enactic, Inc." }]
+description = "dora-rs node to control OpenArm Cell Lifter"
+license = { text = "Apache-2.0" }
+readme = "README.md"
+requires-python = ">=3.10"
+
+dependencies = ["dora-rs >= 0.5.0", "openarm-can"]
+
+[dependency-groups]
+dev = [
+  "pytest >= 8.1.1",
+  "ruff == 0.14.11", # sync with .pre-commit-config.yaml
+]
+
+[project.scripts]
+dora-openarm-cell-lifter = "dora_openarm_cell_lifter.main:main"
+
+[project.urls]
+Repository = "https://github.com/enactic/dora-openarm-cell-lifter"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff.lint]
+extend-select = [
+  "D",   # pydocstyle
+  "UP"
+]
+
+[tool.ruff.lint.per-file-ignores]
+"!src/**.py" = ["D"]

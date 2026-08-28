@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>OpenArm data collection UI</title>
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+
+      body {
+        font-family: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+        background: #0a0a0f;
+        color: #e0e0e0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 48px 24px;
+        gap: 32px;
+      }
+
+      .top-row {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        background: #1a1a2e;
+        padding: 20px 36px;
+        border-radius: 16px;
+      }
+
+      .episode {
+        font-size: 36px;
+        font-weight: bold;
+        color: #00e5ff;
+        text-shadow: 0 0 10px #00e5ff, 0 0 30px #00e5ff;
+      }
+
+      .task {
+        font-size: 36px;
+        font-weight: bold;
+        color: #00e5ff;
+        text-shadow: 0 0 10px #00e5ff, 0 0 30px #00e5ff;
+      }
+
+      div:not(.top-row):not(.status):not(.camera-stats) > div:last-child {
+        color: #888;
+        font-size: 18px;
+        margin-top: 4px;
+      }
+
+      .status {
+        font-size: 20px;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+      }
+
+      .status.collecting {
+        color: white;
+        background: #ff3355;
+        padding: 10px 24px;
+        border-radius: 9999px;
+        display: inline-block;
+        box-shadow: 0 0 12px rgba(255, 51, 85, 0.5), 0 0 24px rgba(255, 51, 85, 0.25);
+      }
+
+      .status.idle {
+        color: white;
+        background: #00ff88;
+        color: #0a0a0f;
+        padding: 10px 24px;
+        border-radius: 9999px;
+        display: inline-block;
+        box-shadow: 0 0 12px rgba(0, 255, 136, 0.5), 0 0 24px rgba(0, 255, 136, 0.25);
+      }
+
+      .arm-row {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        background: #1a1a2e;
+        padding: 16px 28px;
+        border-radius: 16px;
+      }
+      .arm-label {
+        font-size: 16px;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        color: #888;
+      }
+      .arm-badge {
+        font-size: 16px;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        padding: 6px 16px;
+        border-radius: 9999px;
+        color: #0a0a0f;
+      }
+      .arm-badge.stopped { background: #888; }
+      .arm-badge.started { background: #ffcc00; }
+      .arm-badge.aligned { background: #00ff88; }
+      .big-button.arm-toggle {
+        font-size: 18px;
+        padding: 12px 28px;
+        margin: 0;
+      }
+
+      .big-button {
+        font-family: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+        font-size: 28px;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        padding: 20px 48px;
+        margin: 10px;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .start {
+        background: rgba(0, 255, 136, 0.1);
+        color: #00ff88;
+        border: 2px solid rgba(0, 255, 136, 0.4);
+        box-shadow: 0 0 12px rgba(0, 255, 136, 0.15);
+      }
+      .start:hover {
+        background: rgba(0, 255, 136, 0.2);
+        box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+      }
+
+      .finish {
+        background: rgba(255, 51, 85, 0.1);
+        color: #ff3355;
+        border: 2px solid rgba(255, 51, 85, 0.4);
+        box-shadow: 0 0 12px rgba(255, 51, 85, 0.15);
+      }
+      .finish:hover {
+        background: rgba(255, 51, 85, 0.2);
+        box-shadow: 0 0 20px rgba(255, 51, 85, 0.3);
+      }
+
+      .quit {
+        background: rgba(136, 136, 136, 0.1);
+        color: #888;
+        border: 2px solid rgba(136, 136, 136, 0.3);
+        font-size: 18px;
+        padding: 12px 28px;
+        margin-top: 24px;
+      }
+      .quit:hover {
+        background: rgba(136, 136, 136, 0.2);
+        color: #aaa;
+        box-shadow: 0 0 12px rgba(136, 136, 136, 0.2);
+      }
+
+      form { display: inline; }
+
+      .camera-stats {
+        background: #1a1a2e;
+        padding: 16px 24px;
+        border-radius: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        min-width: 380px;
+      }
+      .camera-stats-title {
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        color: #888;
+        margin-bottom: 6px;
+      }
+      .stat-row {
+        display: grid;
+        grid-template-columns: 110px 90px 1fr;
+        gap: 12px;
+        align-items: baseline;
+        font-size: 16px;
+        color: #e0e0e0;
+      }
+      .stat-row .cam-name { color: #aaa; }
+      .stat-row .cam-fps { color: #00e5ff; font-weight: bold; }
+      .stat-row .cam-jitter { color: #888; }
+      .stat-row.warn .cam-jitter { color: #ffcc00; }
+      .stat-row.error .cam-fps,
+      .stat-row.error .cam-jitter { color: #ff3355; }
+      .stat-row.stale .cam-fps,
+      .stat-row.stale .cam-jitter { color: #555; }
+
+      .vr-stats { margin-top: 12px; }
+      .vr-stats .cam-fps { color: #b388ff; }
+    </style>
+  </head>
+  <body>
+    <div class="top-row">
+      <div class="episode">
+        Episode: {{ state.episode_number }}
+      </div>
+
+      {% if state.collecting -%}
+        <div class="status collecting">Collecting</div>
+      {% else -%}
+        <div class="status idle">Idle</div>
+      {% endif -%}
+    </div>
+
+    <div class="arm-row">
+      <div class="arm-label">Arm</div>
+      <div class="arm-badge {{ state.arm_status_left }}">L: {{ state.arm_status_left | upper }}</div>
+      <div class="arm-badge {{ state.arm_status_right }}">R: {{ state.arm_status_right | upper }}</div>
+      {% if state.arm_status_right == "stopped" and state.arm_status_left == "stopped" -%}
+        <form id="arm-start-form" action="{{ url_for("_arm_start") }}" method="post">
+          <input class="big-button start arm-toggle" type="submit" value="Start Arm">
+        </form>
+      {% else -%}
+        <form id="arm-stop-form" action="{{ url_for("_arm_stop") }}" method="post">
+          <input class="big-button finish arm-toggle" type="submit" value="Pause Arm">
+        </form>
+      {% endif -%}
+    </div>
+
+    <div class="task">Task: {{ state.task_index }}</div>
+    <div>({{ state.task_title }})</div>
+
+    {% if state.collecting -%}
+      <form id="finish-form" action="{{ url_for("_success") }}" method="post">
+        <input class="big-button finish" type="submit" value="Success!">
+      </form>
+
+      <form id="fail-form" action="{{ url_for("_fail") }}" method="post">
+        <input class="big-button finish" type="submit" value="Fail!">
+      </form>
+
+      <form id="cancel-form" action="{{ url_for("_cancel") }}" method="post">
+        <input class="big-button finish" type="submit" value="Cancel!">
+      </form>
+    {% else -%}
+      <form id="start-form" action="{{ url_for("_start") }}" method="post">
+        <input class="big-button start" type="submit" value="Start!">
+      </form>
+      <form id="skip-form" action="{{ url_for("_skip") }}" method="post">
+        <input class="big-button start" type="submit" value="Skip task">
+      </form>
+    {% endif -%}
+
+    <div class="camera-stats">
+      <div class="camera-stats-title">Camera streams</div>
+      <div class="stat-row stale" data-cam="camera_wrist_right">
+        <span class="cam-name">wrist R</span>
+        <span class="cam-fps">-- Hz</span>
+        <span class="cam-jitter">Δ -- ms</span>
+      </div>
+      <div class="stat-row stale" data-cam="camera_wrist_left">
+        <span class="cam-name">wrist L</span>
+        <span class="cam-fps">-- Hz</span>
+        <span class="cam-jitter">Δ -- ms</span>
+      </div>
+      <div class="stat-row stale" data-cam="camera_head_left">
+        <span class="cam-name">head L</span>
+        <span class="cam-fps">-- Hz</span>
+        <span class="cam-jitter">Δ -- ms</span>
+      </div>
+      <div class="stat-row stale" data-cam="camera_head_right">
+        <span class="cam-name">head R</span>
+        <span class="cam-fps">-- Hz</span>
+        <span class="cam-jitter">Δ -- ms</span>
+      </div>
+      <div class="stat-row stale" data-cam="camera_ceiling">
+        <span class="cam-name">ceiling</span>
+        <span class="cam-fps">-- Hz</span>
+        <span class="cam-jitter">Δ -- ms</span>
+      </div>
+    </div>
+
+    <div class="camera-stats vr-stats">
+      <div class="camera-stats-title">VR stream (raw UDP)</div>
+      <div class="stat-row stale" data-vr="vr_rx">
+        <span class="cam-name">VR</span>
+        <span class="cam-fps">-- Hz</span>
+        <span class="cam-jitter">Δ -- ms</span>
+      </div>
+    </div>
+
+    {% if state.running -%}
+      <form id="quit-form" action="{{ url_for("_quit") }}" method="post">
+        <input class="big-button quit" type="submit" value="Quit">
+      </form>
+    {% endif -%}
+
+    <script>
+      const LONG_PRESS_MS = 1000;
+      let skipTimer = null;
+      let cancelTimer = null;
+      let armTimer = null;
+      const focusableElements = [...document.querySelectorAll('input')];
+
+      document.addEventListener("keydown", function(event) {
+        if (event.repeat) return;
+
+        if (event.key.toLowerCase() === "c") {
+          if (!skipTimer) {
+            skipTimer = setTimeout(() => {
+              skipTimer = null;
+              const skipForm = document.getElementById("skip-form");
+              if (skipForm) skipForm.submit();
+            }, LONG_PRESS_MS);
+          }
+        }
+
+        if (event.key.toLowerCase() === "b") {
+          // `b` is quit (short press) / arm start-pause toggle (long press).
+          // The toggle works on both the start and collecting panels.
+          if (!armTimer) {
+            armTimer = setTimeout(() => {
+              armTimer = null;
+              const armForm =
+                document.getElementById("arm-start-form") ||
+                document.getElementById("arm-stop-form");
+              if (armForm) armForm.submit();
+            }, LONG_PRESS_MS);
+          }
+        }
+
+        if (event.key.toLowerCase() === "a") {
+          // While collecting, `a` is fail (short) / cancel (long press).
+          if (!document.getElementById("start-form") && !cancelTimer) {
+            cancelTimer = setTimeout(() => {
+              cancelTimer = null;
+              const cancelForm = document.getElementById("cancel-form");
+              if (cancelForm) cancelForm.submit();
+            }, LONG_PRESS_MS);
+          }
+        }
+        if (event.key.toLowerCase() === "h") {
+          const current = focusableElements.indexOf(document.activeElement);
+          const next = (current + 1) % focusableElements.length;
+          focusableElements[next].focus();
+        }
+        if (event.key.toLowerCase() === "y") {
+          const current = focusableElements.indexOf(document.activeElement);
+          const prev = (current - 1 + focusableElements.length) % focusableElements.length;
+          focusableElements[prev].focus();
+        }
+        if (event.key.toLowerCase() === "n") {
+          const active = document.activeElement;
+          const form = active.closest('form');
+          if (form) {
+            form.submit();
+          }
+        }
+      });
+
+      document.addEventListener("keyup", (event) => {
+        if (event.key.toLowerCase() === "c") {
+          if (skipTimer) {
+            clearTimeout(skipTimer);
+            skipTimer = null;
+            const startForm = document.getElementById("start-form");
+            if (startForm) startForm.submit();
+            const finishForm = document.getElementById("finish-form");
+            if (finishForm) finishForm.submit();
+          }
+        }
+
+        if (event.key.toLowerCase() === "b") {
+          // Short press (timer still pending): quit. A long press already
+          // fired the arm toggle from the timer, so do nothing here.
+          if (armTimer) {
+            clearTimeout(armTimer);
+            armTimer = null;
+            const quitForm = document.getElementById("quit-form");
+            if (quitForm) quitForm.submit();
+          }
+        }
+
+        if (event.key.toLowerCase() === "a") {
+          if (cancelTimer) {
+            clearTimeout(cancelTimer);
+            cancelTimer = null;
+            const failForm = document.getElementById("fail-form");
+            if (failForm) failForm.submit();
+          }
+        }
+      });
+
+      const eventSource = new EventSource("/events?since={{ state_version }}");
+      eventSource.onmessage = () => {
+        location.reload();
+      };
+
+      const FPS_ERROR = 20;
+      const JITTER_WARN_MS = 10;
+      const JITTER_ERROR_MS = 30;
+
+      const statsSource = new EventSource("/stats");
+      statsSource.onmessage = (e) => {
+        const stats = JSON.parse(e.data);
+        for (const [cam, s] of Object.entries(stats)) {
+          const row = document.querySelector(`[data-cam="${cam}"]`);
+          if (!row) continue;
+          const fpsEl = row.querySelector(".cam-fps");
+          const jitterEl = row.querySelector(".cam-jitter");
+          if (!s || s.fps <= 0) {
+            fpsEl.textContent = "-- Hz";
+            jitterEl.textContent = "Δ -- ms";
+            row.classList.add("stale");
+            row.classList.remove("warn", "error");
+            continue;
+          }
+          row.classList.remove("stale");
+          fpsEl.textContent = s.fps.toFixed(1) + " Hz";
+          jitterEl.textContent = "Δ " + s.jitter_ms.toFixed(1) + " ms";
+          const isError = s.fps < FPS_ERROR || s.jitter_ms > JITTER_ERROR_MS;
+          const isWarn = !isError && s.jitter_ms > JITTER_WARN_MS;
+          row.classList.toggle("error", isError);
+          row.classList.toggle("warn", isWarn);
+        }
+      };
+
+      const VR_FPS_ERROR = 50;        // expect ~72 Hz from the headset
+      const VR_JITTER_WARN_MS = 10;
+      const VR_JITTER_ERROR_MS = 30;
+
+      const vrStatsSource = new EventSource("/vr-stats");
+      vrStatsSource.onmessage = (e) => {
+        const s = JSON.parse(e.data);
+        const row = document.querySelector('[data-vr="vr_rx"]');
+        if (!row) return;
+        const fpsEl = row.querySelector(".cam-fps");
+        const jitterEl = row.querySelector(".cam-jitter");
+        if (!s || s.fps <= 0) {
+          fpsEl.textContent = "-- Hz";
+          jitterEl.textContent = "Δ -- ms";
+          row.classList.add("stale");
+          row.classList.remove("warn", "error");
+          return;
+        }
+        row.classList.remove("stale");
+        fpsEl.textContent = s.fps.toFixed(1) + " Hz";
+        jitterEl.textContent = "Δ " + s.jitter_ms.toFixed(1) + " ms";
+        const isError = s.fps < VR_FPS_ERROR || s.jitter_ms > VR_JITTER_ERROR_MS;
+        const isWarn = !isError && s.jitter_ms > VR_JITTER_WARN_MS;
+        row.classList.toggle("error", isError);
+        row.classList.toggle("warn", isWarn);
+      };
+    </script>
+  </body>
+</html>

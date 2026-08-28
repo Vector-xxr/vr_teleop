@@ -1,0 +1,8 @@
+# Quest bridge (OpenArm Cartesian teleop)
+websockets>=12.0
+numpy>=1.24
+matplotlib>=3.7
+scipy>=1.10
+
+# Robot camera FPV streaming (optional, see README)
+opencv-python>=4.8

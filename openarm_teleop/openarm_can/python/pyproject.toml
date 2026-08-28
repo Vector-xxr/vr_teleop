@@ -1,0 +1,38 @@
+# Copyright 2025 Enactic, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+[build-system]
+build-backend = "scikit_build_core.build"
+requires = ["scikit-build-core", "nanobind"]
+
+[project]
+authors = [{name = "Enactic, Inc."}]
+# pyproject-metadta 0.7.1 on Ubuntu 24.04 doesn't accept PEP 639 yet.
+# license = "Apache-2.0"
+# license-files = ["LICENSE.txt"]
+license = {text = "Apache-2.0"}
+maintainers = [{name = "Enactic, Inc."}]
+name = "openarm_can"
+readme = "README.md"
+requires-python = ">= 3.10"
+version = "1.2.9"
+
+[project.urls]
+changelog = "https://github.com/enactic/openarm_can/releases"
+documentation = "https://docs.openarm.dev/software/can"
+homepage = "https://docs.openarm.dev/software/can"
+issues = "https://github.com/enactic/openarm_can/issues"
+repository = "https://github.com/enactic/openarm_can.git"
+
+[tool.autopep8]

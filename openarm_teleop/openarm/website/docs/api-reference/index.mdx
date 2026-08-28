@@ -1,0 +1,89 @@
+---
+sidebar_position: 1
+description: software-overview
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# OpenArm Software Guide
+
+Welcome to the OpenArm software ecosystem! We're building a toolkit for bridging the bimanual robot (and we'd love your help making it even better).
+
+## What to Expect (and Growing!)
+
+The OpenArm software ecosystem is continuously evolving, offering tools that bridge hardware and intelligent control:
+
+- **Robot Description**: Modularized XACRO files for generating URDF robot models for controls and simulation
+- **Low-Level Control APIs**: High-frequency control package allows direct interaction with motors
+- **CAN CLI**: Command-line tool for configuring and monitoring DaMiao motors over CAN/CAN-FD interfaces
+- **ROS2 Integration**: Standard robotics middleware compatibility
+- **Dora Nodes**: Independent Python processes communicating over Dora topics for robot control, data collection, and inference
+
+*Many of these components are actively being developed and improved. We welcome contributions, feedback, and collaboration!*
+
+## Getting Started
+
+**New to OpenArm?** Start with our [Setup Guide](setup) to configure your development environment.
+
+**Want to contribute?** Each section below has opportunities for improvement and extension.
+
+## Available Components
+
+### Robot Description
+
+**[Learn more under Robot Description →](description)**
+
+URDF and XACRO files that provide representations of OpenArm. These models enable simulation, motion planning, and visualization. The package supports both single-arm and bimanual configurations.
+
+---
+
+### CAN
+
+<Tabs>
+  <TabItem value="library" label="Library">
+
+**[Learn more under SocketCAN Communication →](can)**
+
+A C++ library for communicating with OpenArm motors through Linux's SocketCAN interface. Enables real-time control loops and motor coordination. Offers Python bindings for seamless integration with other frameworks.
+
+  </TabItem>
+  <TabItem value="cli" label="CLI">
+
+**[Learn more under CAN CLI →](can/cli)**
+
+A command-line tool for configuring and monitoring DaMiao motors over CAN/CAN-FD interfaces. Supports motor discovery, parameter read/write, enable/disable, live telemetry, baudrate changes, and ID assignment.
+
+  </TabItem>
+</Tabs>
+
+---
+
+### ROS2 Integration
+
+**[Learn more under ROS2 →](ros2/install)**
+
+Middleware for connecting OpenArm with the broader ROS2 ecosystem. Enables compatibility with existing robotics tools and frameworks.
+
+- **Current features**: ROS2 control and hardware interfaces and moveit configurations for basic motion planning
+- **In development**: Efficient hardware bridging node for direct control
+- **Help wanted**: Support for additional ROS2 distributions, testing and validation
+
+---
+
+### Dora Nodes
+
+**[Learn more under Dora →](dora)**
+
+Independent Python processes that communicate by passing Arrow arrays over Dora topics. A dataflow YAML wires them together. Covers robot control, data collection, bridging, inference/policy, and mock nodes for development without physical hardware.
+
+---
+
+## Join the Community
+
+- Connect with us on [Discord](https://discord.com/invite/FsZaZ4z3We)
+- Report bugs or request features via GitHub issues in each repository
+- Contribute by submitting pull requests
+- Reach out at [openarm@enactic.ai](mailto:openarm@enactic.ai)
+
+*The OpenArm ecosystem grows stronger with every contribution. Ready to help build the future of accessible robotics?*

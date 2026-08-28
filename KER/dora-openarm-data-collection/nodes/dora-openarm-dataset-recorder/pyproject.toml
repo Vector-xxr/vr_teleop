@@ -1,0 +1,49 @@
+# Copyright 2026 Enactic, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+[project]
+name = "dora-openarm-dataset-recorder"
+version = "0.4.0"
+authors = [{ name = "Enactic, Inc." }]
+description = "Dora node to record data as OpenArm dataset"
+license = { text = "Apache-2.0" }
+readme = "README.md"
+requires-python = ">=3.8"
+
+dependencies = [
+  "dora-rs >= 0.3.9",
+  "numpy",
+  "pyyaml >= 6.0",
+]
+
+[dependency-groups]
+dev = [
+  "pytest >= 8.1.1",
+  "ruff == 0.14.11", # sync with .pre-commit-config.yaml
+]
+
+[project.scripts]
+dora-openarm-dataset-recorder = "dora_openarm_dataset_recorder.main:main"
+
+[project.urls]
+Repository = "https://github.com/enactic/dora-openarm-dataset-recorder"
+
+[tool.ruff.lint]
+extend-select = [
+  "D",   # pydocstyle
+  "UP"
+]
+
+[tool.ruff.lint.per-file-ignores]
+"!src/**.py" = ["D"]

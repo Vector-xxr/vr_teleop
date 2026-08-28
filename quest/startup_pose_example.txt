@@ -1,0 +1,22 @@
+# Startup motion file for quest_cartesian_control (--startup-file).
+#
+# Each non-comment line is a waypoint:
+#   [t]  side  q0 q1 q2 q3 q4 q5 q6  [grip]
+#
+#   side : left | right | both
+#   t    : OPTIONAL leading time in seconds. If any row has a time, all rows are
+#          played at those times. If omitted, rows are spaced evenly over
+#          --startup-move-sec (default 4s).
+#   grip : OPTIONAL 8th value (gripper). If omitted, the gripper is held.
+#
+# Values are absolute joint positions (radians). Each arm starts from its
+# current measured pose and interpolates (smoothstep) through its waypoints.
+#
+# --- Example 1: single target pose (both arms -> TABLE_READY, elbow j4 = 90 deg)
+both 0 0 0 1.570796 0 0 0 0
+
+# --- Example 2 (commented): a 2-step trajectory, per arm, with explicit times.
+#   Uncomment and delete Example 1 above to use it.
+# 0.0 both  0 0 0 0.3      0 0 0 0
+# 2.5 left  0 0 0 1.570796 0 0 0 0
+# 2.5 right 0 0 0 1.570796 0 0 0 0

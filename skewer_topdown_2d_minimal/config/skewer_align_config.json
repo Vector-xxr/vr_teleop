@@ -1,0 +1,53 @@
+{
+  "pixel_to_base_mm": [
+    -0.03078148,
+    -0.33406186,
+    -0.34268837,
+    0.057850355
+  ],
+  "target_center_px": [
+    365.0,
+    380.0
+  ],
+  "note": "pixel_to_base_mm maps image error [du,dv] px to base XY correction [dx,dy] mm. target_center_px is the fixed gripper-center pixel.",
+  "last_calibration_updated_at": "2026-07-23T16:16:08",
+  "last_calibration_rms_fit_error_mm": 2.740184495595588,
+  "last_calibration_source": "outputs/auto_xy_calib/xy_calib_20260723_160640/pixel_to_base_xy_calibration.json",
+  "pixel_to_base_model": "quadratic_offset_delta",
+  "quadratic_feature_order": [
+    "du",
+    "dv",
+    "du2",
+    "dv2",
+    "du_dv",
+    "bias"
+  ],
+  "quadratic_offset_from_error_coeff": [
+    [
+      0.021872511103344008,
+      0.3580087416986664
+    ],
+    [
+      0.3719037035690283,
+      -0.04713376876024348
+    ],
+    [
+      -8.091938674931187e-06,
+      -8.989155542995023e-05
+    ],
+    [
+      0.0003145956903627123,
+      3.6230019057332044e-05
+    ],
+    [
+      -0.0001457594453118105,
+      0.0002363410852544781
+    ],
+    [
+      27.21879140223886,
+      -0.10582397449404737
+    ]
+  ],
+  "quadratic_rms_fit_error_mm": 1.8741634466734676,
+  "quadratic_rank": 6
+}

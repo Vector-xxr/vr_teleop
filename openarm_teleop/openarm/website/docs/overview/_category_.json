@@ -1,0 +1,8 @@
+{
+  "label": "Overview",
+  "position": 1,
+  "link": {
+    "type": "generated-index",
+    "description": "Overview of the OpenArm 2.0 project, what's new since 1.0, safety, and how to contribute."
+  }
+}

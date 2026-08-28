@@ -1,0 +1,68 @@
+# KER leader → MuJoCo follower (no CAN / no real motors).
+# Use this to validate joint mapping & teleop feel before real arms.
+# UI: http://127.0.0.1:8000  (recording optional; Start!/Success!)
+
+nodes:
+  - id: ui
+    build: pip install -e nodes/dora-openarm-data-collection-ui
+    path: dora-openarm-data-collection-ui
+    env:
+      METADATA_FILE: "metadata_mujoco.yaml"
+    inputs:
+      tick: dora/timer/secs/1
+    outputs:
+      - command
+
+  - id: quittable-tick-leader
+    build: pip install -e nodes/dora-openarm-quitter
+    path: dora-openarm-quitter
+    inputs:
+      command: ui/command
+      # ~250 Hz — match real KER dataflow
+      tick: dora/timer/millis/4
+    outputs:
+      - tick
+
+  - id: leader
+    build: pip install -e nodes/dora-openarm-ker
+    path: dora-openarm-ker
+    inputs:
+      tick: quittable-tick-leader/tick
+    outputs:
+      - follower_position_left
+      - follower_position_right
+      - metadata
+
+  - id: mujoco
+    build: pip install -e nodes/dora-openarm-mujoco
+    path: dora-openarm-mujoco
+    # qpos write-through (kinematic), viewer on; no camera render
+    args: "--scene demo --keyframe home --viewer 30"
+    env:
+      DISPLAY: ":0"
+    inputs:
+      position_left:
+        source: leader/follower_position_left
+        queue_size: 1
+      position_right:
+        source: leader/follower_position_right
+        queue_size: 1
+    outputs:
+      - status
+      - arm_right_observation
+      - arm_left_observation
+
+  - id: recorder
+    build: pip install -e nodes/dora-openarm-dataset-recorder
+    path: dora-openarm-dataset-recorder
+    env:
+      METADATA_FILE: "metadata_mujoco.yaml"
+      DIRECTORY: "ker_mujoco_data"
+      NAME: "joints_only"
+    inputs:
+      command: ui/command
+      arm_right_action: leader/follower_position_right
+      arm_right_observation: mujoco/arm_right_observation
+      arm_left_action: leader/follower_position_left
+      arm_left_observation: mujoco/arm_left_observation
+      ker_metadata: leader/metadata

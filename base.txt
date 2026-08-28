@@ -1,0 +1,2 @@
+[positions] timestamp=2026-07-27T16:39:26 arm_side=right_arm follower={arm_m1=-0.329404, arm_m2=1.10571, arm_m3=0.387007, arm_m4=2.10441, arm_m5=1.08053, arm_m6=-0.0726711, arm_m7=-0.283627, gripper_m1=-0.00400549}
+[positions] timestamp=2026-07-27T16:39:26 arm_side=left_arm follower={arm_m1=0.00476844, arm_m2=-0.282101, arm_m3=-0.427062, arm_m4=2.0964, arm_m5=-0.407988, arm_m6=-0.329023, arm_m7=0.411803, gripper_m1=0.081445}

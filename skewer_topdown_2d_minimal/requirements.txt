@@ -1,0 +1,16 @@
+# Python dependencies used by skewer_topdown_2d.
+# The project has been tested from the existing conda env:
+#   conda activate anygrasp
+#
+# Do not blindly pip install this over the robot environment unless necessary.
+# OpenArm/KDL/replay code has been bundled under ./vendor.
+# These system/runtime pieces are still expected on the robot computer:
+#   SocketCAN + iproute2/sudo
+#   ROS Humble KDL/urdfdom/yaml-cpp runtime libraries
+#   camera driver/runtime for the selected backend
+
+numpy
+opencv-python
+
+# Optional, only needed when using --camera-backend orbbec.
+pyorbbecsdk

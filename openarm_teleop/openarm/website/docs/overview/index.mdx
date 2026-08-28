@@ -1,0 +1,113 @@
+---
+slug: /
+title: Project Overview
+sidebar_position: 1
+---
+
+import BlockImage from '@site/src/components/BlockImage';
+
+# Project Overview
+
+OpenArm is an open-source 7DOF humanoid arm designed for physical AI research and deployment in contact-rich environments. Hardware and software — CAD, firmware, control code, and simulation tools — are openly available so you can build, hack, and deploy.
+
+We're in continuous development and actively seeking contributors, research partners, and company collaborators to shape the next generation of practical humanoid systems.
+
+<div style={{ position: "relative", paddingBottom: "56.25%", height: 0, margin: "2rem 0", overflow: "hidden" }}>
+  <iframe
+    src="https://www.youtube.com/embed/QzJSBbF7zIE"
+    title="YouTube video player"
+    style={{
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      border: 0
+    }}
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    allowFullScreen
+  />
+</div>
+
+## Making SOTA Reproducible
+
+OpenArm 2.0 is a unified environment for data collection and reproducible auto-evaluation — the open-source foundation to turn isolated experiments into shared progress. Claims like "Model A outperforms Model B" only hold meaning when results can be reproduced under identical conditions, so the project pairs the arm itself with a standardized evaluation environment and teaching tools.
+
+## What's Unique?
+
+- Human-scale design, with proportions and dimensions scaled for a person around 160–165 cm tall. This provides a good balance between practical reach and manageable inertia for safe, responsive operation.
+- Safety-first architecture. QDD backdrivable motors and high compliance prioritize safe human–robot interaction while maintaining practical payload (6.0 kg peak / 4.1 kg nominal) for real-world tasks.
+- Bilateral force feedback for contact-rich teleoperation and high-fidelity data collection, beyond what unilateral leader–follower setups can capture.
+- Built for durability. Critical structural components use aluminum and stainless steel construction for robust performance under repetitive data collection and continuous research use.
+- Fully accessible and buildable. Every component — from CNC parts and 3D-printed casings to electrical wiring — is purchasable and buildable by individual researchers and labs, with complete fabrication data provided.
+- Practical and affordable. OpenArm delivers research-grade capabilities at a fraction of traditional humanoid robot costs, making advanced robotics accessible to more teams and applications.
+
+<BlockImage src="hardware/openarm-2.0/general/openarm-2.0.png" alt="OpenArm 2.0" width="100%" />
+
+## The OpenArm Ecosystem
+
+OpenArm 2.0 is more than the arm. It is a coordinated set of hardware that targets the full loop of data collection, training, and reproducible evaluation.
+
+- [OpenArm 2.0](../hardware/openarm-2.0/general.mdx) — the 7DOF arm itself: human-scale dimensions, QDD backdrivable joints, an in-hand camera in a redesigned compact gripper, and a MISUMI-frame base that is easy to mount and extend.
+- [OpenArm Cell](../hardware/openarm-cell/general.mdx) — a reproducible evaluation cell that standardizes background, lighting, cameras, and arm position so that model comparisons are fair and automatable.
+- [OpenArm KER](../hardware/openarm-ker/general.mdx) — Kinematic Equivalent Replica, a motorless leader arm with identical kinematics to OpenArm 2.0 for intuitive, low-fatigue teleoperation and teaching.
+
+## Specifications at a Glance
+
+OpenArm 2.0 has a small human-like physique. The support pillars are made of MISUMI aluminum frames, making it easy to adjust the dimensions and attach cameras, sensors, and other attachments. The base plate has evenly spaced M6 taps so it can be fixed directly to a table or other surface, and each joint has a mechanical limit that restricts the range of motion for safety.
+
+<table>
+  <tbody>
+    <tr><td>DOF</td><td>7 per arm</td></tr>
+    <tr><td>Nominal payload</td><td>4.1 kg (held for 1 minute in the worst posture)</td></tr>
+    <tr><td>Peak payload</td><td>6.0 kg (3 s move + 1 s hold in the worst posture)</td></tr>
+    <tr><td>Joints</td><td>QDD backdrivable, mechanical limits on every axis</td></tr>
+    <tr><td>Control bus</td><td>CAN-FD</td></tr>
+    <tr><td>Structure</td><td>Aluminum + stainless steel, MISUMI-frame base</td></tr>
+    <tr><td>End-effector</td><td>Compact parallel gripper with in-hand camera</td></tr>
+  </tbody>
+</table>
+
+See [Hardware → OpenArm 2.0 → General](../hardware/openarm-2.0/general.mdx) for full dimensions, payload definitions, and CAD/BOM downloads.
+
+## Purchase OpenArm
+
+OpenArm is available as a DIY kit or as a fully assembled unit from verified manufacturers worldwide.
+
+<div style={{ margin: '1.5rem 0' }}>
+  <a href="../purchase" style={{
+    display: 'inline-block',
+    padding: '10px 20px',
+    backgroundColor: '#5FBBC7',
+    color: 'white',
+    textDecoration: 'none',
+    borderRadius: '5px',
+    fontWeight: '600'
+  }}
+  onMouseOver={(e) => {
+    e.currentTarget.style.background = '#3b8089';
+    e.currentTarget.style.transform = 'translateY(-2px)';
+  }}
+  onMouseOut={(e) => {
+    e.currentTarget.style.background = '#5Fbbc7';
+    e.currentTarget.style.transform = 'none';
+  }}
+  >Buy Now →</a>
+</div>
+
+## Project and Repositories
+
+OpenArm is organized across multiple platforms to support different aspects of development, collaboration, and community engagement.
+
+- Main site: [openarm.dev](https://openarm.dev) — project homepage with announcements, visualizations, and contact forms.
+- Documentation: [docs.openarm.dev](https://docs.openarm.dev) — complete technical guides and tutorials.
+- GitHub: [enactic/openarm](https://github.com/enactic/openarm) — open-source repositories, issue tracking, and feature requests.
+- Discord: [Join the community](https://discord.gg/GmYa262ETH) — real-time discussions, support, and collaboration.
+
+## Get Help
+
+Our community and team are ready to help:
+
+- Discord — connect with other builders, researchers, and the OpenArm team for real-time support and discussions: [Join Now](https://discord.gg/GmYa262ETH)
+- GitHub Issues — report bugs or request features directly in our repository: [Open an Issue](https://github.com/enactic/openarm/issues)
+- GitHub Discussions — ask technical questions in our repository: [Start a Discussion](https://github.com/enactic/openarm/discussions)

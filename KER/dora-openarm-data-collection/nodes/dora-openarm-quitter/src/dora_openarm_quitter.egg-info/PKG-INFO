@@ -1,0 +1,26 @@
+Metadata-Version: 2.4
+Name: dora-openarm-quitter
+Version: 1.0.0
+Summary: Dora node that can quit
+Author: Enactic, Inc.
+License: Apache-2.0
+Project-URL: Repository, https://github.com/enactic/dora-openarm-quitter
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: dora-rs>=0.3.9
+Dynamic: license-file
+
+# dora-openarm-quitter
+
+A [Dora](https://dora-rs.ai/) node that exits when it receives a `quit` command.
+
+## License
+
+Licensed under the Apache License 2.0. See [LICENSE](LICENSE) for details.
+
+Copyright 2026 Enactic, Inc.
+
+## Code of Conduct
+
+All participation in the OpenArm project is governed by our [Code of Conduct](CODE_OF_CONDUCT.md).

@@ -1,0 +1,312 @@
+# Copyright 2025-2026 Enactic, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: Package
+on:
+  push:
+    branches:
+      - '**'
+      - '!dependabot/**'
+    tags:
+      - '**'
+  pull_request:
+concurrency:
+  group: ${{ github.head_ref || github.sha }}-${{ github.workflow }}
+  cancel-in-progress: true
+jobs:
+  source:
+    name: Source
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y reprotest
+      - name: Prepare environment variables
+        run: |
+          if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
+            echo "VERSION=${GITHUB_REF_NAME}" >> "${GITHUB_ENV}"
+          else
+            VERSION=$(grep '^project' CMakeLists.txt | grep -o '[0-9.]*')
+            echo "VERSION=${VERSION}" >> "${GITHUB_ENV}"
+          fi
+      - name: Test source archive reproducible
+        run: |
+          # We can't download anything in reprotest because it changes
+          # the current time. If current time is changed, TLS
+          # verification will be failed.
+          #
+          # TODO: We should make downloaded archive reproducible.
+          rake vendor:download
+          sudo reprotest \
+            "rake dist VERSION=${VERSION}" \
+            openarm-can-${VERSION}.tar.gz
+      - name: Create source archive
+        run: |
+          rake dist
+          sha256sum \
+            openarm-can-${VERSION}.tar.gz > \
+            openarm-can-${VERSION}.tar.gz.sha256
+          sha512sum \
+            openarm-can-${VERSION}.tar.gz > \
+            openarm-can-${VERSION}.tar.gz.sha512
+      - uses: actions/setup-python@v6
+        with:
+          python-version: 3
+      - name: Install dependencies for Python source archive
+        run: |
+          pip install build
+      - name: Create Python source archive
+        run: |
+          cd python
+          python -m build --sdist
+          cd dist
+          sha256sum \
+            openarm_can-${VERSION}.tar.gz > \
+            openarm_can-${VERSION}.tar.gz.sha256
+          sha512sum \
+            openarm_can-${VERSION}.tar.gz > \
+            openarm_can-${VERSION}.tar.gz.sha512
+          mv * ../../
+      - uses: actions/upload-artifact@v7
+        with:
+          name: source
+          path: |
+            openarm-can-${{ env.VERSION }}.tar.gz
+            openarm-can-${{ env.VERSION }}.tar.gz.sha256
+            openarm-can-${{ env.VERSION }}.tar.gz.sha512
+            openarm_can-${{ env.VERSION }}.tar.gz
+            openarm_can-${{ env.VERSION }}.tar.gz.sha256
+            openarm_can-${{ env.VERSION }}.tar.gz.sha512
+  build:
+    name: Build
+    needs: source
+    strategy:
+      fail-fast: false
+      matrix:
+        id:
+          - ubuntu-jammy-amd64
+          - ubuntu-jammy-arm64
+          - ubuntu-noble-amd64
+          - ubuntu-noble-arm64
+          - ubuntu-resolute-amd64
+          - ubuntu-resolute-arm64
+    env:
+      APACHE_ARROW_REPOSITORY: ${{ github.workspace }}/apache-arrow
+    # condition && true-case || false-case
+    # ==
+    # condition ? true-case : false-case
+    runs-on: >-
+      ${{ (contains(matrix.id, 'arm64') ||
+           contains(matrix.id, 'aarch64')) && 'ubuntu-24.04-arm' ||
+                                              'ubuntu-latest' }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: recursive
+      - uses: actions/checkout@v6
+        with:
+          path: apache-arrow
+          repository: apache/arrow
+      - name: Prepare environment variables
+        run: |
+          id=${{ matrix.id }}
+          # ubuntu-noble-amd64 -> ubuntu-noble
+          os_version=${id%-*}
+          # ubuntu-noble -> ubuntu
+          os=${os_version%-*}
+          # ubuntu-noble -> noble
+          version=${os_version##*-}
+          # ubuntu-noble-amd64 -> amd64
+          architecture=${id##*-}
+
+          if [ "${os}" = "debian" ] || [ "${os}" = "ubuntu" ]; then
+            TASK_NAMESPACE=apt
+            if [ "${architecture}" = "amd64" ]; then
+              echo "APT_TARGETS=${os_version}" >> "${GITHUB_ENV}"
+              TEST_DOCKER_IMAGE="${os}:${version}"
+            else
+              echo "APT_TARGETS=${id}" >> "${GITHUB_ENV}"
+              TEST_DOCKER_IMAGE="arm64v8/${os}:${version}"
+            fi
+          else
+            TASK_NAMESPACE=yum
+            # amazon-linux -> amazonlinux
+            docker_os=${os/-/}
+            if [ "${architecture}" = "x86_64" ]; then
+              echo "YUM_TARGETS=${os_version}" >> "${GITHUB_ENV}"
+              TEST_DOCKER_IMAGE="${docker_os}:${version}"
+            else
+              echo "YUM_TARGETS=${id}" >> "${GITHUB_ENV}"
+              TEST_DOCKER_IMAGE="arm64v8/${docker_os}:${version}"
+            fi
+          fi
+          echo "ARCHITECTURE=${architecture}" >> ${GITHUB_ENV}
+          echo "TASK_NAMESPACE=${TASK_NAMESPACE}" >> ${GITHUB_ENV}
+          echo "TEST_DOCKER_IMAGE=${TEST_DOCKER_IMAGE}" >> ${GITHUB_ENV}
+      - name: Install dependencies
+        run: |
+          sudo apt update -o="APT::Acquire::Retries=3"
+          sudo apt install -y -V -o="APT::Acquire::Retries=3" \
+            devscripts \
+            ruby
+      - uses: actions/download-artifact@v8
+        with:
+          name: source
+      - name: Update version
+        if: github.ref_type != 'tag'
+        run: |
+          cd packages
+          rake version:update
+      - name: Login to GitHub Container registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build with docker
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd packages
+          rake docker:pull || :
+          rake ${TASK_NAMESPACE}:build BUILD_DIR=build
+          if [ "${TASK_NAMESPACE}" = "yum" ] && [ "${ARCHITECTURE}" != "x86_64" ]; then
+            # Remove SRPMs from non x86_64 artifacts
+            rm -rf ${TASK_NAMESPACE}/repositories/*/*/source
+          fi
+      - uses: actions/upload-artifact@v7
+        with:
+          name: packages-${{ matrix.id }}
+          path: packages/${{ env.TASK_NAMESPACE }}/repositories/
+      - name: Push the built Docker image
+        continue-on-error: true
+        run: |
+          cd packages
+          rake docker:push
+      - name: Test
+        run: |
+          docker run \
+            --rm \
+            --volume ${PWD}:/host:ro \
+            ${TEST_DOCKER_IMAGE} \
+            /host/packages/${TASK_NAMESPACE}/test.sh
+  release:
+    name: Release
+    needs:
+      - source
+      - build
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      contents: write
+      discussions: write
+    steps:
+      - uses: actions/download-artifact@v8
+      - name: Prepare package artifacts
+        run: |
+          set -x
+          for packages_path in packages-*; do
+            # packages-ubuntu-jammy-amd64 ->
+            # ubuntu-jammy-amd64
+            os_arch=${packages_path#packages-}
+            # ubuntu-jammy-amd64 ->
+            # ubuntu-jammy
+            os=${os_arch%-*}
+
+            mkdir -p release/${os}/
+            # packages-ubuntu-jammy-amd64/ubuntu/pool/jammy/ ->
+            # release/ubuntu-jammy/ubuntu/pool/jammy/
+            rsync -a ${packages_path}/ release/${os}/
+          done
+          for release_os_path in release/*; do
+            # release/ubuntu-jammy ->
+            # ubuntu-jammy
+            os=$(basename ${release_os_path})
+
+            # release/ubuntu-jammy/ubuntu/pool/jammy/ ->
+            # ubuntu-jammy/ubuntu/pool/jammy/
+            tar czf ${os}.tar.gz -C $(dirname ${release_os_path}) ${os}
+          done
+      - name: Create GitHub Release
+        if: github.ref_type == 'tag'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version=${GITHUB_REF_NAME}
+          gh release create ${version} \
+            --discussion-category Announcements \
+            --generate-notes \
+            --repo ${GITHUB_REPOSITORY} \
+            --title "OpenArm CAN ${version}" \
+            --verify-tag \
+            *.tar.gz \
+            source/*
+      - uses: actions/checkout@v6
+        if: github.ref_type == 'tag'
+        with:
+          path: openarm_can
+      - uses: actions/checkout@v6
+        if: github.ref_type == 'tag'
+        with:
+          path: apache-arrow
+          repository: apache/arrow
+      - uses: actions/checkout@v6
+        if: github.ref_type == 'tag'
+        with:
+          path: groonga
+          repository: groonga/groonga
+      - name: Prepare for Launchpad publishing
+        if: github.ref_type == 'tag'
+        run: |
+          cp source/*.tar.gz openarm_can/
+          sudo apt update
+          sudo apt install -y \
+            build-essential \
+            debhelper \
+            devscripts \
+            dh-python
+      - name: Publish to Launchpad
+        if: github.ref_type == 'tag'
+        env:
+          APACHE_ARROW_REPOSITORY: ${{ github.workspace }}/apache-arrow
+          GROONGA_REPOSITORY: ${{ github.workspace }}/groonga
+          LAUNCHPAD_DEPLOY_KEY: ${{ secrets.LAUNCHPAD_DEPLOY_KEY }}
+          LAUNCHPAD_UPLOADER_PGP_KEY: "0x0D2FCD607041CDB69695F176934C5D4649C7E035"
+        run: |
+          echo "${LAUNCHPAD_DEPLOY_KEY}" | gpg --import
+          echo "trusted-key ${LAUNCHPAD_UPLOADER_PGP_KEY}" > ~/.gnupg/gpg.conf
+          rake -C openarm_can/packages ubuntu
+  pypi:
+    name: PyPI
+    if: github.ref_type == 'tag'
+    needs:
+      - source
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: pypi
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: source
+      - name: Prepare directory structure
+        run: |
+          mkdir -p dist
+          mv openarm_can-*.tar.gz dist/
+      - uses: pypa/gh-action-pypi-publish@release/v1

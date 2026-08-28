@@ -1,0 +1,112 @@
+[
+{
+  "directory": "/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/build",
+  "command": "/usr/bin/c++  -I/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/../openarm_can/include -Wall -Wextra -Wpedantic -std=gnu++17 -o CMakeFiles/openarm_can_local.dir/home/lan/openarm_demo2/openarm_inspace/openarm_can/src/openarm/can/socket/arm_component.cpp.o -c /home/lan/openarm_demo2/openarm_inspace/openarm_can/src/openarm/can/socket/arm_component.cpp",
+  "file": "/home/lan/openarm_demo2/openarm_inspace/openarm_can/src/openarm/can/socket/arm_component.cpp"
+},
+{
+  "directory": "/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/build",
+  "command": "/usr/bin/c++  -I/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/../openarm_can/include -Wall -Wextra -Wpedantic -std=gnu++17 -o CMakeFiles/openarm_can_local.dir/home/lan/openarm_demo2/openarm_inspace/openarm_can/src/openarm/can/socket/gripper_component.cpp.o -c /home/lan/openarm_demo2/openarm_inspace/openarm_can/src/openarm/can/socket/gripper_component.cpp",
+  "file": "/home/lan/openarm_demo2/openarm_inspace/openarm_can/src/openarm/can/socket/gripper_component.cpp"
+},
+{
+  "directory": "/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/build",
+  "command": "/usr/bin/c++  -I/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/../openarm_can/include -Wall -Wextra -Wpedantic -std=gnu++17 -o CMakeFiles/openarm_can_local.dir/home/lan/openarm_demo2/openarm_inspace/openarm_can/src/openarm/can/socket/openarm.cpp.o -c /home/lan/openarm_demo2/openarm_inspace/openarm_can/src/openarm/can/socket/openarm.cpp",
+  "file": "/home/lan/openarm_demo2/openarm_inspace/openarm_can/src/openarm/can/socket/openarm.cpp"
+},
+{
+  "directory": "/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/build",
+  "command": "/usr/bin/c++  -I/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/../openarm_can/include -Wall -Wextra -Wpedantic -std=gnu++17 -o CMakeFiles/openarm_can_local.dir/home/lan/openarm_demo2/openarm_inspace/openarm_can/src/openarm/canbus/can_device_collection.cpp.o -c /home/lan/openarm_demo2/openarm_inspace/openarm_can/src/openarm/canbus/can_device_collection.cpp",
+  "file": "/home/lan/openarm_demo2/openarm_inspace/openarm_can/src/openarm/canbus/can_device_collection.cpp"
+},
+{
+  "directory": "/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/build",
+  "command": "/usr/bin/c++  -I/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/../openarm_can/include -Wall -Wextra -Wpedantic -std=gnu++17 -o CMakeFiles/openarm_can_local.dir/home/lan/openarm_demo2/openarm_inspace/openarm_can/src/openarm/canbus/can_socket.cpp.o -c /home/lan/openarm_demo2/openarm_inspace/openarm_can/src/openarm/canbus/can_socket.cpp",
+  "file": "/home/lan/openarm_demo2/openarm_inspace/openarm_can/src/openarm/canbus/can_socket.cpp"
+},
+{
+  "directory": "/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/build",
+  "command": "/usr/bin/c++  -I/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/../openarm_can/include -Wall -Wextra -Wpedantic -std=gnu++17 -o CMakeFiles/openarm_can_local.dir/home/lan/openarm_demo2/openarm_inspace/openarm_can/src/openarm/damiao_motor/dm_motor.cpp.o -c /home/lan/openarm_demo2/openarm_inspace/openarm_can/src/openarm/damiao_motor/dm_motor.cpp",
+  "file": "/home/lan/openarm_demo2/openarm_inspace/openarm_can/src/openarm/damiao_motor/dm_motor.cpp"
+},
+{
+  "directory": "/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/build",
+  "command": "/usr/bin/c++  -I/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/../openarm_can/include -Wall -Wextra -Wpedantic -std=gnu++17 -o CMakeFiles/openarm_can_local.dir/home/lan/openarm_demo2/openarm_inspace/openarm_can/src/openarm/damiao_motor/dm_motor_control.cpp.o -c /home/lan/openarm_demo2/openarm_inspace/openarm_can/src/openarm/damiao_motor/dm_motor_control.cpp",
+  "file": "/home/lan/openarm_demo2/openarm_inspace/openarm_can/src/openarm/damiao_motor/dm_motor_control.cpp"
+},
+{
+  "directory": "/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/build",
+  "command": "/usr/bin/c++  -I/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/../openarm_can/include -Wall -Wextra -Wpedantic -std=gnu++17 -o CMakeFiles/openarm_can_local.dir/home/lan/openarm_demo2/openarm_inspace/openarm_can/src/openarm/damiao_motor/dm_motor_device.cpp.o -c /home/lan/openarm_demo2/openarm_inspace/openarm_can/src/openarm/damiao_motor/dm_motor_device.cpp",
+  "file": "/home/lan/openarm_demo2/openarm_inspace/openarm_can/src/openarm/damiao_motor/dm_motor_device.cpp"
+},
+{
+  "directory": "/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/build",
+  "command": "/usr/bin/c++  -I/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/../openarm_can/include -Wall -Wextra -Wpedantic -std=gnu++17 -o CMakeFiles/openarm_can_local.dir/home/lan/openarm_demo2/openarm_inspace/openarm_can/src/openarm/damiao_motor/dm_motor_device_collection.cpp.o -c /home/lan/openarm_demo2/openarm_inspace/openarm_can/src/openarm/damiao_motor/dm_motor_device_collection.cpp",
+  "file": "/home/lan/openarm_demo2/openarm_inspace/openarm_can/src/openarm/damiao_motor/dm_motor_device_collection.cpp"
+},
+{
+  "directory": "/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/build",
+  "command": "/usr/bin/c++  -I/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/src -I/home/lan/miniconda3/envs/openarm_teleop1/lib/python3.11/site-packages/mujoco/include -I/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/../openarm_can/include -isystem /usr/include/eigen3 -isystem /opt/ros/humble/include/kdl_parser -isystem /opt/ros/humble/include/urdfdom_headers -isystem /opt/ros/humble/include/urdfdom -isystem /home/lan/miniconda3/include -Wall -Wextra -Wpedantic -std=gnu++17 -o CMakeFiles/openarm_inplace_lib.dir/src/controller/dynamics.cpp.o -c /home/lan/openarm_demo2/openarm_inspace/openarm_inplace/src/controller/dynamics.cpp",
+  "file": "/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/src/controller/dynamics.cpp"
+},
+{
+  "directory": "/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/build",
+  "command": "/usr/bin/c++  -I/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/src -I/home/lan/miniconda3/envs/openarm_teleop1/lib/python3.11/site-packages/mujoco/include -I/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/../openarm_can/include -isystem /usr/include/eigen3 -isystem /opt/ros/humble/include/kdl_parser -isystem /opt/ros/humble/include/urdfdom_headers -isystem /opt/ros/humble/include/urdfdom -isystem /home/lan/miniconda3/include -Wall -Wextra -Wpedantic -std=gnu++17 -o CMakeFiles/openarm_inplace_lib.dir/src/controller/control.cpp.o -c /home/lan/openarm_demo2/openarm_inspace/openarm_inplace/src/controller/control.cpp",
+  "file": "/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/src/controller/control.cpp"
+},
+{
+  "directory": "/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/build",
+  "command": "/usr/bin/c++  -I/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/src -I/home/lan/miniconda3/envs/openarm_teleop1/lib/python3.11/site-packages/mujoco/include -I/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/../openarm_can/include -isystem /usr/include/eigen3 -isystem /opt/ros/humble/include/kdl_parser -isystem /opt/ros/humble/include/urdfdom_headers -isystem /opt/ros/humble/include/urdfdom -isystem /home/lan/miniconda3/include -Wall -Wextra -Wpedantic -std=gnu++17 -o CMakeFiles/openarm_inplace_lib.dir/src/openarm_port/openarm_init.cpp.o -c /home/lan/openarm_demo2/openarm_inspace/openarm_inplace/src/openarm_port/openarm_init.cpp",
+  "file": "/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/src/openarm_port/openarm_init.cpp"
+},
+{
+  "directory": "/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/build",
+  "command": "/usr/bin/c++  -I/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/src -I/home/lan/miniconda3/envs/openarm_teleop1/lib/python3.11/site-packages/mujoco/include -I/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/../openarm_can/include -isystem /usr/include/eigen3 -isystem /opt/ros/humble/include/kdl_parser -isystem /opt/ros/humble/include/urdfdom_headers -isystem /opt/ros/humble/include/urdfdom -isystem /home/lan/miniconda3/include -Wall -Wextra -Wpedantic -std=gnu++17 -o CMakeFiles/openarm_inplace_lib.dir/src/openarm_port/joint_mapper.cpp.o -c /home/lan/openarm_demo2/openarm_inspace/openarm_inplace/src/openarm_port/joint_mapper.cpp",
+  "file": "/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/src/openarm_port/joint_mapper.cpp"
+},
+{
+  "directory": "/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/build",
+  "command": "/usr/bin/c++  -I/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/src -I/home/lan/miniconda3/envs/openarm_teleop1/lib/python3.11/site-packages/mujoco/include -I/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/../openarm_can/include -isystem /usr/include/eigen3 -isystem /opt/ros/humble/include/kdl_parser -isystem /opt/ros/humble/include/urdfdom_headers -isystem /opt/ros/humble/include/urdfdom -isystem /home/lan/miniconda3/include -Wall -Wextra -Wpedantic -std=gnu++17 -o CMakeFiles/openarm_inplace_lib.dir/src/safety/safety_filter.cpp.o -c /home/lan/openarm_demo2/openarm_inspace/openarm_inplace/src/safety/safety_filter.cpp",
+  "file": "/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/src/safety/safety_filter.cpp"
+},
+{
+  "directory": "/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/build",
+  "command": "/usr/bin/c++  -I/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/src -I/home/lan/miniconda3/envs/openarm_teleop1/lib/python3.11/site-packages/mujoco/include -I/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/../openarm_can/include -isystem /usr/include/eigen3 -isystem /opt/ros/humble/include/kdl_parser -isystem /opt/ros/humble/include/urdfdom_headers -isystem /opt/ros/humble/include/urdfdom -isystem /home/lan/miniconda3/include -Wall -Wextra -Wpedantic -std=gnu++17 -o CMakeFiles/openarm_inplace_lib.dir/src/io/teleop_io.cpp.o -c /home/lan/openarm_demo2/openarm_inspace/openarm_inplace/src/io/teleop_io.cpp",
+  "file": "/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/src/io/teleop_io.cpp"
+},
+{
+  "directory": "/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/build",
+  "command": "/usr/bin/c++  -I/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/src -I/home/lan/miniconda3/envs/openarm_teleop1/lib/python3.11/site-packages/mujoco/include -I/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/../openarm_can/include -isystem /usr/include/eigen3 -isystem /opt/ros/humble/include/kdl_parser -isystem /opt/ros/humble/include/urdfdom_headers -isystem /opt/ros/humble/include/urdfdom -isystem /home/lan/miniconda3/include -Wall -Wextra -Wpedantic -std=gnu++17 -o CMakeFiles/openarm_inplace_lib.dir/src/hardware/teleop_hardware.cpp.o -c /home/lan/openarm_demo2/openarm_inspace/openarm_inplace/src/hardware/teleop_hardware.cpp",
+  "file": "/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/src/hardware/teleop_hardware.cpp"
+},
+{
+  "directory": "/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/build",
+  "command": "/usr/bin/c++  -I/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/src -I/home/lan/miniconda3/envs/openarm_teleop1/lib/python3.11/site-packages/mujoco/include -I/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/../openarm_can/include -isystem /usr/include/eigen3 -isystem /opt/ros/humble/include/kdl_parser -isystem /opt/ros/humble/include/urdfdom_headers -isystem /opt/ros/humble/include/urdfdom -isystem /home/lan/miniconda3/include -Wall -Wextra -Wpedantic -std=gnu++17 -o CMakeFiles/openarm_inplace_lib.dir/src/hardware/mujoco_teleop_hardware.cpp.o -c /home/lan/openarm_demo2/openarm_inspace/openarm_inplace/src/hardware/mujoco_teleop_hardware.cpp",
+  "file": "/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/src/hardware/mujoco_teleop_hardware.cpp"
+},
+{
+  "directory": "/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/build",
+  "command": "/usr/bin/c++  -I/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/src -I/home/lan/miniconda3/envs/openarm_teleop1/lib/python3.11/site-packages/mujoco/include -I/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/../openarm_can/include -isystem /usr/include/eigen3 -isystem /opt/ros/humble/include/kdl_parser -isystem /opt/ros/humble/include/urdfdom_headers -isystem /opt/ros/humble/include/urdfdom -isystem /home/lan/miniconda3/include -Wall -Wextra -Wpedantic -std=gnu++17 -o CMakeFiles/gravity_comp.dir/control/gravity_compensation.cpp.o -c /home/lan/openarm_demo2/openarm_inspace/openarm_inplace/control/gravity_compensation.cpp",
+  "file": "/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/control/gravity_compensation.cpp"
+},
+{
+  "directory": "/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/build",
+  "command": "/usr/bin/c++  -I/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/src -I/home/lan/miniconda3/envs/openarm_teleop1/lib/python3.11/site-packages/mujoco/include -I/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/../openarm_can/include -isystem /usr/include/eigen3 -isystem /opt/ros/humble/include/kdl_parser -isystem /opt/ros/humble/include/urdfdom_headers -isystem /opt/ros/humble/include/urdfdom -isystem /home/lan/miniconda3/include -Wall -Wextra -Wpedantic -std=gnu++17 -o CMakeFiles/comm_test.dir/control/openarm_communication_test.cpp.o -c /home/lan/openarm_demo2/openarm_inspace/openarm_inplace/control/openarm_communication_test.cpp",
+  "file": "/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/control/openarm_communication_test.cpp"
+},
+{
+  "directory": "/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/build",
+  "command": "/usr/bin/c++  -I/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/src -I/home/lan/miniconda3/envs/openarm_teleop1/lib/python3.11/site-packages/mujoco/include -I/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/../openarm_can/include -isystem /usr/include/eigen3 -isystem /opt/ros/humble/include/kdl_parser -isystem /opt/ros/humble/include/urdfdom_headers -isystem /opt/ros/humble/include/urdfdom -isystem /home/lan/miniconda3/include -Wall -Wextra -Wpedantic -std=gnu++17 -o CMakeFiles/unilateral_control.dir/control/openarm_unilateral_control.cpp.o -c /home/lan/openarm_demo2/openarm_inspace/openarm_inplace/control/openarm_unilateral_control.cpp",
+  "file": "/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/control/openarm_unilateral_control.cpp"
+},
+{
+  "directory": "/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/build",
+  "command": "/usr/bin/c++  -I/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/src -I/home/lan/miniconda3/envs/openarm_teleop1/lib/python3.11/site-packages/mujoco/include -I/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/../openarm_can/include -isystem /usr/include/eigen3 -isystem /opt/ros/humble/include/kdl_parser -isystem /opt/ros/humble/include/urdfdom_headers -isystem /opt/ros/humble/include/urdfdom -isystem /home/lan/miniconda3/include -Wall -Wextra -Wpedantic -std=gnu++17 -o CMakeFiles/bilateral_control.dir/control/openarm_bilateral_control.cpp.o -c /home/lan/openarm_demo2/openarm_inspace/openarm_inplace/control/openarm_bilateral_control.cpp",
+  "file": "/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/control/openarm_bilateral_control.cpp"
+},
+{
+  "directory": "/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/build",
+  "command": "/usr/bin/c++  -I/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/src -I/home/lan/miniconda3/envs/openarm_teleop1/lib/python3.11/site-packages/mujoco/include -I/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/../openarm_can/include -isystem /usr/include/eigen3 -isystem /opt/ros/humble/include/kdl_parser -isystem /opt/ros/humble/include/urdfdom_headers -isystem /opt/ros/humble/include/urdfdom -isystem /home/lan/miniconda3/include -Wall -Wextra -Wpedantic -std=gnu++17 -o CMakeFiles/mujoco_panel_control.dir/control/openarm_mujoco_panel_control.cpp.o -c /home/lan/openarm_demo2/openarm_inspace/openarm_inplace/control/openarm_mujoco_panel_control.cpp",
+  "file": "/home/lan/openarm_demo2/openarm_inspace/openarm_inplace/control/openarm_mujoco_panel_control.cpp"
+}
+]

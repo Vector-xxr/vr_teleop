@@ -1,0 +1,8 @@
+# KER lightweight stack — Python deps (conda env recommended)
+# Install into env openarm_teleop1:
+#   pip install -r requirements.txt
+numpy>=1.24
+pyusb>=1.2
+mujoco>=3.0
+# openarm_can is NOT on PyPI as a ready wheel for all hosts — build from source:
+#   see DEPLOY_PUBLIC.md § openarm_can

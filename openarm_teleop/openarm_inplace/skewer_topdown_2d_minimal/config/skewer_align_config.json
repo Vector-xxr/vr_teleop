@@ -1,0 +1,60 @@
+{
+  "pixel_to_base_mm": [
+    0.03561294001989646,
+    -0.39009725740639956,
+    -0.37890794695196156,
+    -0.05767014118072447
+  ],
+  "target_center_px": [
+    353.0,
+    309.0
+  ],
+  "gripper_open": -0.5,
+  "gripper_close": 0.1,
+  "calibration_status": "valid",
+  "note": "pixel_to_base_mm maps image error [du,dv] px to base XY correction [dx,dy] mm. target_center_px is the fixed gripper-center pixel.",
+  "last_calibration_updated_at": "2026-07-28T12:08:56",
+  "last_calibration_rms_fit_error_mm": 1.7146419421050052,
+  "last_calibration_source": "outputs/auto_xy_calib/xy_calib_20260728_120612/pixel_to_base_xy_calibration.json",
+  "pixel_to_base_model": "quadratic_offset_delta",
+  "quadratic_feature_order": [
+    "du",
+    "dv",
+    "du2",
+    "dv2",
+    "du_dv",
+    "bias"
+  ],
+  "quadratic_offset_from_error_coeff": [
+    [
+      -0.0011264675936894797,
+      0.3974767183827919
+    ],
+    [
+      0.18425433832724833,
+      0.006248166124425929
+    ],
+    [
+      -4.835728837308817e-05,
+      0.00013134600984912072
+    ],
+    [
+      -0.0007641280289479996,
+      -0.00016040031162358522
+    ],
+    [
+      0.0002189734492361317,
+      0.00017068731274995103
+    ],
+    [
+      16.65599447824612,
+      -14.201804083840244
+    ]
+  ],
+  "quadratic_rms_fit_error_mm": 0.7743601751632513,
+  "quadratic_rank": 6,
+  "removed_outliers": [
+    "014_y_plus_p0_p10",
+    "018_y_plus_p0_p50"
+  ]
+}

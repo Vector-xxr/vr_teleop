@@ -1,0 +1,59 @@
+{
+  "pixel_to_base_mm": [
+    0.006259518171714585,
+    -0.44587999435517917,
+    -0.43994022246741593,
+    -0.03594660346265491
+  ],
+  "pixel_to_base_model": "linear",
+  "quadratic_offset_from_error_coeff": [
+    [
+      -0.07117380120075847,
+      0.46469412161537627
+    ],
+    [
+      0.19965295062888952,
+      -0.36530278574916036
+    ],
+    [
+      5.3456810485373596e-05,
+      0.0003584891225818787
+    ],
+    [
+      -0.0008190337256373525,
+      -0.0012887375869566342
+    ],
+    [
+      -0.00038549628013376247,
+      0.00020669640135392853
+    ],
+    [
+      48.3191001953624,
+      -38.967816278379765
+    ]
+  ],
+  "quadratic_feature_order": [
+    "du",
+    "dv",
+    "du2",
+    "dv2",
+    "du_dv",
+    "bias"
+  ],
+  "quadratic_rms_fit_error_mm": 1.9565180865094633,
+  "target_center_px": [
+    355.0,
+    319.0
+  ],
+  "last_calibration_updated_at": "2026-07-28T16:40:21",
+  "last_calibration_rms_fit_error_mm": 2.0917560578763026,
+  "last_calibration_source": "outputs/auto_xy_calib/xy_calib_20260728_163516/pixel_to_base_xy_calibration.json",
+  "note": "pixel_to_base_mm maps image error [du,dv] px to base XY correction [dx,dy] mm. target_center_px is the fixed gripper-center pixel.",
+  "quadratic_rank": 6,
+  "removed_outliers": [
+    "000_candidate1_current_p0_p0",
+    "000_center",
+    "001_x_plus_p5_p0"
+  ],
+  "left_linear_fallback_reason": "2026-07-28: latest calibration has no strong outliers, but quadratic RMS only marginally improves over linear; use linear for safer real grasp validation."
+}
